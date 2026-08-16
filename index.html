@@ -1,0 +1,874 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Amiri:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+#sanad-root {
+  --emerald-950:#07201A;
+  --emerald-900:#0B2E23;
+  --emerald-800:#123D2E;
+  --emerald-700:#1C5643;
+  --emerald-600:#276F57;
+  --gold-600:#B08A22;
+  --gold-500:#C9A227;
+  --gold-300:#E4C766;
+  --gold-100:#F4E9C6;
+  --paper:#FBF7EC;
+  --paper-line:#E4D9B8;
+  --ink:#1C231E;
+  --ink-soft:#57604F;
+  --danger:#A8432B;
+  --font-display:'Fraunces', serif;
+  --font-body:'Plus Jakarta Sans', sans-serif;
+  --font-arabic:'Amiri', 'Traditional Arabic', serif;
+  --font-mono:'JetBrains Mono', monospace;
+
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: var(--emerald-950);
+  min-height: 100vh;
+  padding: 0 0 64px 0;
+  position: relative;
+  overflow-x: hidden;
+}
+
+#sanad-root * { box-sizing: border-box; }
+
+#sanad-root .bg-star-field{
+  position:absolute; inset:0; pointer-events:none; z-index:0;
+  background-image: radial-gradient(circle at 12% 8%, rgba(201,162,39,0.10), transparent 40%),
+                     radial-gradient(circle at 90% 4%, rgba(201,162,39,0.08), transparent 35%),
+                     radial-gradient(circle at 80% 70%, rgba(39,111,87,0.25), transparent 45%);
+}
+
+#sanad-root a { color: inherit; }
+
+/* ---------- Header ---------- */
+#sanad-root .masthead{
+  position:relative; z-index:1;
+  padding: 40px 24px 28px;
+  text-align:center;
+  border-bottom: 1px solid rgba(228,199,102,0.18);
+}
+#sanad-root .masthead .kicker{
+  font-family: var(--font-arabic);
+  font-size: 22px;
+  color: var(--gold-300);
+  letter-spacing: 0.02em;
+  margin-bottom: 10px;
+  direction: rtl;
+}
+#sanad-root .masthead h1{
+  font-family: var(--font-display);
+  font-weight:600;
+  font-optical-sizing: auto;
+  font-size: clamp(32px, 5vw, 48px);
+  color: #F6F1E1;
+  margin: 0 0 8px;
+  letter-spacing: -0.01em;
+}
+#sanad-root .masthead h1 em{
+  font-style: italic;
+  color: var(--gold-300);
+}
+#sanad-root .masthead p{
+  font-size: 15px;
+  color: #B9C9BE;
+  max-width: 560px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+#sanad-root .masthead .badges{
+  display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:18px;
+}
+#sanad-root .masthead .badges span{
+  font-size: 11.5px; font-weight:600; letter-spacing:0.04em; text-transform:uppercase;
+  color: var(--emerald-950); background: var(--gold-300);
+  padding: 5px 12px; border-radius: 999px;
+}
+
+/* ---------- Layout ---------- */
+#sanad-root .layout{
+  position:relative; z-index:1;
+  max-width: 1180px; margin: 0 auto; padding: 32px 20px 0;
+  display:grid; grid-template-columns: 400px 1fr; gap: 24px; align-items:start;
+}
+@media (max-width: 880px){
+  #sanad-root .layout{ grid-template-columns: 1fr; }
+}
+
+/* ---------- Form panel ---------- */
+#sanad-root .panel{
+  background: var(--emerald-900);
+  border: 1px solid rgba(228,199,102,0.16);
+  border-radius: 18px;
+  padding: 22px;
+}
+#sanad-root .panel-title{
+  display:flex; align-items:center; gap:10px;
+  font-family: var(--font-display); font-size:19px; font-weight:600;
+  color:#F6F1E1; margin: 0 0 4px;
+}
+#sanad-root .panel-title .dot{
+  width:8px;height:8px;border-radius:50%;background:var(--gold-400,var(--gold-300));
+  box-shadow: 0 0 0 4px rgba(201,162,39,0.18);
+}
+#sanad-root .panel-sub{
+  font-size: 12.5px; color:#9FB3A6; margin: 0 0 20px; line-height:1.5;
+}
+
+#sanad-root .field{ margin-bottom: 16px; }
+#sanad-root .field-row{ display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+#sanad-root label{
+  display:block; font-size: 11.5px; font-weight:700; text-transform:uppercase;
+  letter-spacing:0.05em; color: var(--gold-300); margin-bottom: 7px;
+}
+#sanad-root select, #sanad-root input[type="text"], #sanad-root input[type="number"]{
+  width:100%; background: rgba(251,247,236,0.04); border: 1px solid rgba(228,199,102,0.28);
+  color: #F0EBDA; border-radius: 10px; padding: 10px 12px; font-size: 14px;
+  font-family: var(--font-body); appearance:none; -webkit-appearance:none;
+  transition: border-color .15s, background .15s;
+}
+#sanad-root select:disabled{ opacity:0.4; cursor:not-allowed; }
+#sanad-root select{
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23C9A227' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position: right 12px center; padding-right: 32px;
+}
+#sanad-root select option{ background: var(--emerald-900); color:#F0EBDA; }
+#sanad-root input::placeholder{ color:#7C8C7E; }
+#sanad-root select:focus, #sanad-root input:focus{
+  outline:none; border-color: var(--gold-300); background: rgba(251,247,236,0.07);
+}
+#sanad-root :focus-visible{ outline: 2px solid var(--gold-300); outline-offset: 2px; }
+
+#sanad-root .hint{ font-size:11.5px; color:#7E9186; margin-top:6px; }
+
+#sanad-root .stepper{
+  display:flex; align-items:stretch; border:1px solid rgba(228,199,102,0.28);
+  border-radius:10px; overflow:hidden; background: rgba(251,247,236,0.04);
+}
+#sanad-root .stepper button{
+  width: 38px; background:transparent; border:none; color: var(--gold-300);
+  font-size:18px; cursor:pointer; font-family:var(--font-body);
+}
+#sanad-root .stepper button:hover{ background: rgba(201,162,39,0.12); }
+#sanad-root .stepper input{
+  border:none; text-align:center; background:transparent; width:100%; color:#F0EBDA; font-weight:700;
+}
+#sanad-root .stepper input:focus{ outline:none; }
+
+#sanad-root .kognitif-box{
+  background: rgba(201,162,39,0.07); border:1px solid rgba(228,199,102,0.22);
+  border-radius: 12px; padding: 14px; margin-bottom: 16px;
+}
+#sanad-root .kognitif-box .field{ margin-bottom:0; }
+#sanad-root .kognitif-note{ font-size:11.5px; color:#B9C9BE; margin-top:8px; line-height:1.5; }
+
+#sanad-root details.advanced{ margin-bottom: 18px; }
+#sanad-root details.advanced summary{
+  cursor:pointer; font-size:12.5px; font-weight:700; color:#B9C9BE;
+  list-style:none; display:flex; align-items:center; gap:6px; user-select:none;
+}
+#sanad-root details.advanced summary::-webkit-details-marker{ display:none; }
+#sanad-root details.advanced summary::before{ content:"▸"; color:var(--gold-300); transition: transform .15s; }
+#sanad-root details.advanced[open] summary::before{ transform: rotate(90deg); }
+#sanad-root details.advanced .field-row{ margin-top:14px; }
+
+#sanad-root .btn-generate{
+  width:100%; padding: 14px 18px; border-radius: 12px; border:none; cursor:pointer;
+  background: linear-gradient(135deg, var(--gold-500), var(--gold-600));
+  color: var(--emerald-950); font-weight:800; font-size:14.5px; letter-spacing:0.01em;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  box-shadow: 0 8px 20px -6px rgba(201,162,39,0.5);
+  transition: transform .12s, box-shadow .12s;
+}
+#sanad-root .btn-generate:hover:not(:disabled){ transform: translateY(-1px); box-shadow: 0 10px 24px -6px rgba(201,162,39,0.6); }
+#sanad-root .btn-generate:disabled{ opacity:0.65; cursor:not-allowed; }
+#sanad-root .btn-generate .spin{
+  width:15px;height:15px;border-radius:50%;border:2px solid rgba(7,32,26,0.35);
+  border-top-color: var(--emerald-950); animation: sanad-spin .7s linear infinite;
+}
+@keyframes sanad-spin{ to{ transform: rotate(360deg); } }
+
+#sanad-root .error-box{
+  margin-top:12px; padding:12px 14px; border-radius:10px; font-size:13px; line-height:1.5;
+  background: rgba(168,67,43,0.15); border:1px solid rgba(168,67,43,0.4); color:#F2C9BE;
+}
+
+/* ---------- Output panel ---------- */
+#sanad-root .output-panel{ padding:0; background:transparent; border:none; }
+
+#sanad-root .empty-state{
+  background: var(--emerald-900); border:1px dashed rgba(228,199,102,0.28);
+  border-radius:18px; padding: 60px 28px; text-align:center;
+}
+#sanad-root .empty-state .glyph{
+  font-family: var(--font-arabic); font-size:40px; color: var(--gold-300); margin-bottom:14px; direction:rtl;
+}
+#sanad-root .empty-state h3{ font-family:var(--font-display); color:#F6F1E1; font-size:20px; margin:0 0 8px;}
+#sanad-root .empty-state p{ color:#9FB3A6; font-size:13.5px; max-width:360px; margin:0 auto; line-height:1.6;}
+
+#sanad-root .progress-card{
+  background: var(--emerald-900); border:1px solid rgba(228,199,102,0.2);
+  border-radius:18px; padding: 40px 28px; text-align:center;
+}
+#sanad-root .progress-card .ring{
+  width:52px;height:52px;border-radius:50%; margin: 0 auto 18px;
+  border: 3px solid rgba(228,199,102,0.2); border-top-color: var(--gold-300);
+  animation: sanad-spin 0.9s linear infinite;
+}
+#sanad-root .progress-card .status{
+  font-family: var(--font-display); font-size:18px; color:#F6F1E1; margin-bottom:6px;
+}
+#sanad-root .progress-card .sub{ font-size:12.5px; color:#8FA398; }
+#sanad-root .progress-bar{
+  height:5px; border-radius:99px; background: rgba(228,199,102,0.14); margin-top:20px; overflow:hidden;
+}
+#sanad-root .progress-bar-fill{
+  height:100%; background: linear-gradient(90deg, var(--gold-600), var(--gold-300));
+  width:8%; transition: width .5s ease;
+}
+
+/* Paper sheets */
+#sanad-root .sheet{
+  background: var(--paper); border-radius: 14px; padding: 0; margin-bottom:20px;
+  box-shadow: 0 18px 40px -18px rgba(0,0,0,0.55);
+  position:relative; overflow:hidden;
+}
+#sanad-root .sheet::before{
+  content:""; position:absolute; inset:0; opacity:0.5; pointer-events:none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cg fill='none' stroke='%23C9A227' stroke-opacity='0.10' stroke-width='1'%3E%3Cpath d='M60 6l16 38 38 16-38 16-16 38-16-38-38-16 38-16z'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 220px 220px;
+}
+#sanad-root .sheet-inner{ position:relative; z-index:1; padding: 26px 26px 30px; }
+
+#sanad-root .sheet-toolbar{
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 14px 20px; border-bottom: 1px solid var(--paper-line);
+  position:relative; z-index:1;
+}
+#sanad-root .sheet-toolbar h4{
+  margin:0; font-family:var(--font-display); font-size:16px; color: var(--emerald-800);
+  display:flex; align-items:center; gap:8px;
+}
+#sanad-root .sheet-toolbar .icon{ font-size:15px; }
+#sanad-root .copy-btn{
+  font-size:12px; font-weight:700; color: var(--emerald-800); background: rgba(18,61,46,0.08);
+  border:1px solid rgba(18,61,46,0.18); padding:6px 12px; border-radius:8px; cursor:pointer;
+  display:flex; align-items:center; gap:6px; transition: background .15s;
+}
+#sanad-root .copy-btn:hover{ background: rgba(18,61,46,0.16); }
+#sanad-root .copy-btn.copied{ background: var(--emerald-700); color:#fff; border-color:var(--emerald-700); }
+
+/* Kop letterhead */
+#sanad-root .kop{
+  text-align:center; border-bottom: 2.5px solid var(--emerald-800); padding-bottom: 14px; margin-bottom: 18px;
+}
+#sanad-root .kop .bismillah{ font-family: var(--font-arabic); font-size:20px; color: var(--emerald-800); direction:rtl; margin-bottom:8px; }
+#sanad-root .kop input.school-name{
+  border:none; background:transparent; text-align:center; font-family:var(--font-display);
+  font-weight:700; font-size:19px; color: var(--ink); width:100%; padding:2px 4px; border-radius:6px;
+}
+#sanad-root .kop input.school-name:focus{ outline:1.5px dashed var(--gold-600); }
+#sanad-root .kop .exam-title{
+  font-size:12.5px; letter-spacing:0.14em; text-transform:uppercase; color: var(--gold-600); font-weight:700; margin-top:4px;
+}
+#sanad-root .kop-grid{
+  display:grid; grid-template-columns: 1fr 1fr; gap: 4px 24px; font-size:12.5px; margin-bottom:20px;
+  border: 1px solid var(--paper-line); border-radius:10px; padding: 12px 16px; background: rgba(18,61,46,0.03);
+}
+#sanad-root .kop-grid .row{ display:flex; justify-content:space-between; padding:3px 0; }
+#sanad-root .kop-grid .row b{ color: var(--ink-soft); font-weight:600; }
+#sanad-root .kop-grid .row span{ font-weight:700; color: var(--ink); text-align:right; }
+#sanad-root .kop-instructions{
+  font-size:11.5px; color: var(--ink-soft); font-style:italic; margin-bottom: 20px; line-height:1.6;
+  border-left: 3px solid var(--gold-500); padding-left:10px;
+}
+
+/* Questions */
+#sanad-root .question{ margin-bottom: 22px; }
+#sanad-root .question .qhead{ display:flex; gap:10px; align-items:flex-start; }
+#sanad-root .qnum{
+  flex-shrink:0; width:26px; height:26px; border-radius:50%; background: var(--emerald-800); color:#fff;
+  display:flex; align-items:center; justify-content:center; font-size:12.5px; font-weight:700;
+}
+#sanad-root .qlevel{
+  font-size:9.5px; font-weight:700; color: var(--emerald-800); text-align:center; margin-top:2px;
+}
+#sanad-root .qbody{ flex:1; }
+#sanad-root .stimulus{
+  background: rgba(201,162,39,0.09); border-left: 3px solid var(--gold-500);
+  padding: 10px 14px; border-radius:0 8px 8px 0; font-size: 13px; font-style:italic;
+  color: var(--ink-soft); margin-bottom:10px; line-height:1.6;
+}
+#sanad-root .qtext{ font-size:14.5px; color:var(--ink); line-height:1.65; margin-bottom:10px; }
+#sanad-root .qtext.arabic, #sanad-root .arabic-text{ font-family: var(--font-arabic); font-size:19px; direction: rtl; line-height:2; }
+#sanad-root .choices{ display:flex; flex-direction:column; gap:7px; }
+#sanad-root .choice{ font-size:13.5px; color: var(--ink); display:flex; gap:8px; line-height:1.55; }
+#sanad-root .choice b{ color: var(--emerald-800); }
+#sanad-root .answer-line{ border-bottom: 1px solid var(--paper-line); height: 26px; margin-bottom:6px; }
+
+/* Kunci jawaban */
+#sanad-root .kj-card{
+  border: 1px solid var(--paper-line); border-radius: 12px; padding: 14px; margin-bottom: 12px; background: rgba(18,61,46,0.02);
+}
+#sanad-root .kj-head{ display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+#sanad-root .kj-badge{
+  background: var(--emerald-800); color:#fff; font-size:11.5px; font-weight:700;
+  padding: 3px 10px; border-radius:999px;
+}
+#sanad-root .kj-answer{ font-size:13.5px; font-weight:700; color: var(--ink); }
+#sanad-root .kj-answer span{ color: var(--emerald-700); }
+#sanad-root .kj-pembahasan{ font-size:12.5px; color: var(--ink-soft); line-height:1.65; }
+#sanad-root .kj-pembahasan b{ color: var(--gold-600); }
+
+/* Kisi-kisi table */
+#sanad-root .kisi-table-wrap{ overflow-x:auto; }
+#sanad-root table.kisi{ width:100%; border-collapse: collapse; font-size:12px; }
+#sanad-root table.kisi th{
+  background: var(--emerald-800); color:#fff; text-align:left; padding: 9px 10px; font-weight:700;
+  white-space:nowrap;
+}
+#sanad-root table.kisi td{
+  border-bottom: 1px solid var(--paper-line); padding: 9px 10px; vertical-align:top; color: var(--ink);
+}
+#sanad-root table.kisi tr:nth-child(even) td{ background: rgba(18,61,46,0.025); }
+#sanad-root table.kisi td.center{ text-align:center; }
+
+#sanad-root .actions-row{
+  display:flex; gap:10px; margin-top: 4px; flex-wrap:wrap;
+}
+#sanad-root .btn-secondary{
+  font-size:13px; font-weight:700; color:#F0EBDA; background: var(--emerald-800);
+  border:1px solid rgba(228,199,102,0.3); padding:10px 16px; border-radius:10px; cursor:pointer;
+  display:flex; align-items:center; gap:6px;
+}
+#sanad-root .btn-secondary:hover{ background: var(--emerald-700); }
+
+@media print{
+  body *{ visibility:hidden; }
+  #sanad-root .print-area, #sanad-root .print-area *{ visibility:visible; }
+  #sanad-root .print-area{ position:absolute; left:0; top:0; width:100%; }
+  #sanad-root .sheet{ box-shadow:none; border-radius:0; }
+  #sanad-root .sheet-toolbar{ display:none; }
+}
+</style>
+
+<div id="sanad-root">
+  <div class="bg-star-field"></div>
+
+  <header class="masthead">
+    <div class="kicker">بسم الله الرحمن الرحيم</div>
+    <h1>Sanad <em>— Penyusun Soal Madrasah</em></h1>
+    <p>Susun naskah soal, kunci jawaban &amp; pembahasan, serta kisi-kisi penulisan soal untuk MI, MTs, dan MA — mapel umum maupun Pendidikan Agama Islam dan Bahasa Arab.</p>
+    <div class="badges">
+      <span>MI</span><span>MTs</span><span>MA</span><span>Kurikulum Merdeka</span>
+    </div>
+  </header>
+
+  <div class="layout">
+    <!-- FORM PANEL -->
+    <section class="panel">
+      <h3 class="panel-title"><span class="dot"></span>Konfigurasi Soal</h3>
+      <p class="panel-sub">Lengkapi rincian di bawah, lalu susun naskah soal secara otomatis.</p>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="jenjang">Jenjang</label>
+          <select id="jenjang">
+            <option value="">Pilih jenjang…</option>
+            <option value="MI">MI (Ibtidaiyah)</option>
+            <option value="MTs">MTs (Tsanawiyah)</option>
+            <option value="MA">MA (Aliyah)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="kelas">Kelas</label>
+          <select id="kelas" disabled><option value="">Pilih jenjang dulu</option></select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="mapel">Mata Pelajaran</label>
+        <select id="mapel" disabled><option value="">Pilih jenjang dulu</option></select>
+      </div>
+
+      <div class="field">
+        <label for="topik">Topik / Materi Spesifik</label>
+        <input type="text" id="topik" placeholder="Contoh: Rukun Islam dan Rukun Iman" />
+        <div class="hint">Boleh spesifik (satu sub-bab) atau umum (satu bab besar).</div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="tipeSoal">Tipe Soal</label>
+          <select id="tipeSoal">
+            <option value="Pilihan Ganda">Pilihan Ganda (Biasa)</option>
+            <option value="Pilihan Ganda Kompleks">Pilihan Ganda Kompleks</option>
+            <option value="Benar/Salah">Benar / Salah</option>
+            <option value="Isian Singkat">Isian Singkat</option>
+            <option value="Uraian/Essay">Uraian / Essay</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="jumlah">Jumlah Soal (Maks. 20)</label>
+          <div class="stepper">
+            <button type="button" id="jumlahMinus">−</button>
+            <input type="number" id="jumlah" value="10" min="1" max="20" />
+            <button type="button" id="jumlahPlus">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="kognitif-box">
+        <div class="field">
+          <label for="kognitif">⚖️ Profil Distribusi Kognitif</label>
+          <select id="kognitif">
+            <option value="dasar">Level Dasar (Dominan C1–C2) — Remedial/Latihan Awal</option>
+            <option value="standar" selected>Level Standar (Campuran C1–C4) — PTS/PAS/Ujian Umum</option>
+            <option value="hots">Level HOTS (Dominan C4–C6) — Olimpiade/Pengayaan</option>
+            <option value="lengkap">Paket Lengkap (C1–C6) — Merata Seluruh Level</option>
+          </select>
+        </div>
+        <div class="kognitif-note" id="kognitifNote">*Komposisi: 30% Pengetahuan, 50% Aplikasi, 20% Penalaran.</div>
+      </div>
+
+      <details class="advanced">
+        <summary>Detail Kop Naskah (opsional)</summary>
+        <div class="field-row">
+          <div class="field">
+            <label for="semester">Semester</label>
+            <select id="semester">
+              <option value="Ganjil">Ganjil</option>
+              <option value="Genap">Genap</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="tahunAjaran">Tahun Ajaran</label>
+            <input type="text" id="tahunAjaran" placeholder="2025/2026" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="waktu">Alokasi Waktu</label>
+          <input type="text" id="waktu" placeholder="Otomatis berdasarkan jumlah &amp; tipe soal" />
+        </div>
+      </details>
+
+      <button class="btn-generate" id="generateBtn">
+        <span id="btnLabel">🧾 Buat Soal</span>
+      </button>
+      <div id="errorBox"></div>
+    </section>
+
+    <!-- OUTPUT PANEL -->
+    <section class="panel output-panel" id="outputPanel">
+      <div class="empty-state" id="emptyState">
+        <div class="glyph">﴾ اقرأ ﴿</div>
+        <h3>Naskah soal akan tampil di sini</h3>
+        <p>Isi konfigurasi di sebelah kiri lalu klik <b>Buat Soal</b>. Naskah, kunci jawaban &amp; pembahasan, serta kisi-kisi akan disusun otomatis sesuai jenjang dan mapel yang dipilih.</p>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+(function(){
+  const root = document.getElementById('sanad-root');
+
+  const KELAS_MAP = {
+    MI: ['1','2','3','4','5','6'],
+    MTs: ['7','8','9'],
+    MA: ['10','11','12']
+  };
+
+  const MAPEL_MAP = {
+    MI: {
+      "Mata Pelajaran Umum": ["Matematika","Bahasa Indonesia","Bahasa Inggris","IPAS (Ilmu Pengetahuan Alam & Sosial)","Pendidikan Pancasila","Seni Budaya","PJOK"],
+      "Pendidikan Agama Islam & Bahasa Arab": ["Al-Qur'an Hadits","Akidah Akhlak","Fikih","Sejarah Kebudayaan Islam (SKI)","Bahasa Arab"]
+    },
+    MTs: {
+      "Mata Pelajaran Umum": ["Matematika","Bahasa Indonesia","Bahasa Inggris","Ilmu Pengetahuan Alam (IPA)","Ilmu Pengetahuan Sosial (IPS)","Pendidikan Pancasila","Seni Budaya","PJOK","Informatika"],
+      "Pendidikan Agama Islam & Bahasa Arab": ["Al-Qur'an Hadits","Akidah Akhlak","Fikih","Sejarah Kebudayaan Islam (SKI)","Bahasa Arab"]
+    },
+    MA: {
+      "Mata Pelajaran Umum": ["Matematika","Bahasa Indonesia","Bahasa Inggris","Fisika","Kimia","Biologi","Ekonomi","Sejarah","Geografi","Sosiologi","Pendidikan Pancasila","Seni Budaya","PJOK","Informatika"],
+      "Pendidikan Agama Islam & Bahasa Arab": ["Al-Qur'an Hadits","Akidah Akhlak","Fikih","Ushul Fikih","Sejarah Kebudayaan Islam (SKI)","Bahasa Arab"]
+    }
+  };
+
+  const KOGNITIF_NOTE = {
+    dasar: "*Komposisi: 60% Pengetahuan (C1), 30% Pemahaman (C2), 10% Aplikasi (C3).",
+    standar: "*Komposisi: 30% Pengetahuan, 50% Aplikasi, 20% Penalaran.",
+    hots: "*Komposisi: 15% Aplikasi (C3), 55% Analisis–Evaluasi (C4–C5), 30% Mencipta (C6).",
+    lengkap: "*Komposisi merata: masing-masing ±16–17% untuk level C1 hingga C6."
+  };
+
+  const jenjangEl = root.querySelector('#jenjang');
+  const kelasEl = root.querySelector('#kelas');
+  const mapelEl = root.querySelector('#mapel');
+  const topikEl = root.querySelector('#topik');
+  const tipeSoalEl = root.querySelector('#tipeSoal');
+  const jumlahEl = root.querySelector('#jumlah');
+  const kognitifEl = root.querySelector('#kognitif');
+  const kognitifNoteEl = root.querySelector('#kognitifNote');
+  const semesterEl = root.querySelector('#semester');
+  const tahunAjaranEl = root.querySelector('#tahunAjaran');
+  const waktuEl = root.querySelector('#waktu');
+  const generateBtn = root.querySelector('#generateBtn');
+  const btnLabel = root.querySelector('#btnLabel');
+  const errorBox = root.querySelector('#errorBox');
+  const outputPanel = root.querySelector('#outputPanel');
+
+  jenjangEl.addEventListener('change', () => {
+    const j = jenjangEl.value;
+    if (!j){
+      kelasEl.innerHTML = '<option value="">Pilih jenjang dulu</option>';
+      kelasEl.disabled = true;
+      mapelEl.innerHTML = '<option value="">Pilih jenjang dulu</option>';
+      mapelEl.disabled = true;
+      return;
+    }
+    kelasEl.disabled = false;
+    kelasEl.innerHTML = '<option value="">Pilih kelas…</option>' +
+      KELAS_MAP[j].map(k => `<option value="${k}">Kelas ${k}</option>`).join('');
+
+    mapelEl.disabled = false;
+    let opts = '<option value="">Pilih mata pelajaran…</option>';
+    const groups = MAPEL_MAP[j];
+    Object.keys(groups).forEach(g => {
+      opts += `<optgroup label="${g}">` + groups[g].map(m => `<option value="${m}">${m}</option>`).join('') + '</optgroup>';
+    });
+    mapelEl.innerHTML = opts;
+  });
+
+  kognitifEl.addEventListener('change', () => {
+    kognitifNoteEl.textContent = KOGNITIF_NOTE[kognitifEl.value];
+  });
+
+  root.querySelector('#jumlahMinus').addEventListener('click', () => {
+    jumlahEl.value = Math.max(1, parseInt(jumlahEl.value || '1', 10) - 1);
+  });
+  root.querySelector('#jumlahPlus').addEventListener('click', () => {
+    jumlahEl.value = Math.min(20, parseInt(jumlahEl.value || '1', 10) + 1);
+  });
+  jumlahEl.addEventListener('change', () => {
+    let v = parseInt(jumlahEl.value || '10', 10);
+    if (isNaN(v)) v = 10;
+    jumlahEl.value = Math.min(20, Math.max(1, v));
+  });
+
+  function esc(s){
+    return String(s == null ? '' : s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function isArabicish(mapel){
+    return /Bahasa Arab|Qur'an Hadits|Al-Qur/i.test(mapel || '');
+  }
+
+  const PROGRESS_STEPS = [
+    "Menyusun kisi-kisi penulisan soal…",
+    "Meracik butir soal sesuai level kognitif…",
+    "Menulis kunci jawaban & pembahasan…",
+    "Merapikan naskah soal…"
+  ];
+
+  let progressTimer = null;
+
+  function renderProgress(jumlah){
+    outputPanel.innerHTML = `
+      <div class="progress-card">
+        <div class="ring"></div>
+        <div class="status" id="progressStatus">Meracik Soal 1–${jumlah}…</div>
+        <div class="sub" id="progressSub">${PROGRESS_STEPS[0]}</div>
+        <div class="progress-bar"><div class="progress-bar-fill" id="progressFill"></div></div>
+      </div>`;
+    let step = 0;
+    let pct = 8;
+    const statusEl = root.querySelector('#progressSub');
+    const fillEl = root.querySelector('#progressFill');
+    progressTimer = setInterval(() => {
+      step = (step + 1) % PROGRESS_STEPS.length;
+      if (statusEl) statusEl.textContent = PROGRESS_STEPS[step];
+      pct = Math.min(92, pct + 18);
+      if (fillEl) fillEl.style.width = pct + '%';
+    }, 1400);
+  }
+
+  function stopProgress(){
+    if (progressTimer){ clearInterval(progressTimer); progressTimer = null; }
+  }
+
+  function computeWaktu(tipe, jumlah){
+    const perSoal = tipe === 'Uraian/Essay' ? 8 : (tipe === 'Isian Singkat' ? 3 : 2);
+    return Math.max(20, perSoal * jumlah) + ' menit';
+  }
+
+  function buildPrompt(cfg){
+    const schema = {
+      soal: [{
+        nomor: 1, level_kognitif: "C1", bentuk: cfg.tipeSoal,
+        stimulus: "(teks pemantik jika relevan, kosongkan jika tidak perlu)",
+        pertanyaan: "...",
+        pilihan: cfg.tipeSoal === "Uraian/Essay" || cfg.tipeSoal === "Isian Singkat"
+          ? {} : (cfg.tipeSoal === "Benar/Salah" ? {A:"Benar", B:"Salah"} : {A:"...",B:"...",C:"...",D:"..."}),
+        jawaban: "kunci jawaban singkat (huruf pilihan, atau teks jawaban untuk isian/uraian)",
+        pembahasan: "penjelasan singkat & jelas mengapa jawaban tersebut benar"
+      }],
+      kisi_kisi: [{
+        no: 1, cp: "Capaian Pembelajaran ringkas", tp: "Tujuan Pembelajaran ringkas",
+        materi_pokok: "...", indikator_soal: "...", level_kognitif: "C1", bentuk_soal: cfg.tipeSoal
+      }]
+    };
+
+    const arabicNote = isArabicish(cfg.mapel)
+      ? "Mata pelajaran ini berkaitan dengan Bahasa Arab/Al-Qur'an. Sertakan teks Arab BERHARAKAT LENGKAP (dengan tasykil) pada bagian yang relevan (ayat, kosakata, kalimat Arab), dan sertakan terjemahan/konteks dalam Bahasa Indonesia bila membantu pemahaman siswa. Pastikan penulisan Arab akurat secara kaidah."
+      : "";
+
+    return `Anda adalah tim penyusun asesmen berpengalaman untuk satuan pendidikan Madrasah (MI/MTs/MA) di Indonesia yang mengikuti Kurikulum Merdeka. Susunkan soal ujian yang valid secara kaidah asesmen (CP, TP, indikator soal, dan level kognitif Taksonomi Bloom C1–C6 yang jelas).
+
+RINCIAN PERMINTAAN:
+- Jenjang: ${cfg.jenjang}
+- Kelas: ${cfg.kelas}
+- Mata Pelajaran: ${cfg.mapel}
+- Topik/Materi: ${cfg.topik}
+- Tipe Soal: ${cfg.tipeSoal}
+- Jumlah Soal: ${cfg.jumlah}
+- Profil distribusi level kognitif: ${cfg.kognitifLabel}
+
+${arabicNote}
+
+ATURAN PENULISAN:
+- Gunakan Bahasa Indonesia baku, jelas, sesuai usia dan jenjang siswa.
+- Setiap soal harus benar-benar berkaitan dengan topik yang diminta, tidak generik.
+- Untuk Pilihan Ganda/Kompleks/Benar-Salah: sediakan opsi jawaban yang masuk akal (pengecoh berkualitas, bukan asal-asalan), dan tepat satu (atau beberapa untuk PG Kompleks) jawaban benar.
+- Untuk Isian Singkat/Uraian: field "pilihan" berupa objek kosong {}, dan "jawaban" berisi kunci/kata kunci jawaban model.
+- Setiap soal punya "pembahasan" yang mendidik, singkat, dan tepat.
+- "kisi_kisi" harus memiliki jumlah baris SAMA PERSIS dengan jumlah soal, no urut sesuai nomor soal terkait.
+- Distribusikan level_kognitif (C1–C6) sesuai profil yang diminta.
+
+PENTING — FORMAT OUTPUT:
+Jawab HANYA dengan satu objek JSON valid, tanpa markdown code fence, tanpa teks pembuka/penutup, tanpa komentar. Ikuti persis struktur skema berikut (nilai contoh, ganti dengan isi soal sesungguhnya):
+${JSON.stringify(schema, null, 2)}`;
+  }
+
+  function extractJSON(text){
+    let t = text.trim();
+    t = t.replace(/^```json\s*/i, '').replace(/^```\s*/, '').replace(/```\s*$/,'');
+    const start = t.indexOf('{');
+    const end = t.lastIndexOf('}');
+    if (start === -1 || end === -1) throw new Error('Tidak ditemukan format JSON pada respons.');
+    return JSON.parse(t.slice(start, end + 1));
+  }
+
+  async function generate(){
+    const cfg = {
+      jenjang: jenjangEl.value,
+      kelas: kelasEl.value,
+      mapel: mapelEl.value,
+      topik: topikEl.value.trim(),
+      tipeSoal: tipeSoalEl.value,
+      jumlah: parseInt(jumlahEl.value || '10', 10),
+      kognitifLabel: kognitifEl.options[kognitifEl.selectedIndex].text,
+      semester: semesterEl.value,
+      tahunAjaran: tahunAjaranEl.value.trim() || '2025/2026',
+      waktu: waktuEl.value.trim()
+    };
+
+    if (!cfg.jenjang || !cfg.kelas || !cfg.mapel || !cfg.topik){
+      errorBox.innerHTML = '<div class="error-box">Lengkapi dulu Jenjang, Kelas, Mata Pelajaran, dan Topik/Materi sebelum membuat soal.</div>';
+      return;
+    }
+    errorBox.innerHTML = '';
+    if (!cfg.waktu) cfg.waktu = computeWaktu(cfg.tipeSoal, cfg.jumlah);
+
+    generateBtn.disabled = true;
+    btnLabel.innerHTML = '<span class="spin"></span> Meracik Soal…';
+    renderProgress(cfg.jumlah);
+
+    try {
+      const prompt = buildPrompt(cfg);
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-6",
+          max_tokens: 1000,
+          messages: [{ role: "user", content: prompt }]
+        })
+      });
+
+      if (!response.ok) throw new Error('Permintaan ke layanan penyusun soal gagal (status ' + response.status + ').');
+      const data = await response.json();
+      const textBlock = (data.content || []).find(b => b.type === 'text');
+      if (!textBlock) throw new Error('Respons tidak berisi teks yang dapat diproses.');
+
+      const parsed = extractJSON(textBlock.text);
+      if (!parsed.soal || !Array.isArray(parsed.soal) || parsed.soal.length === 0){
+        throw new Error('Struktur soal yang diterima tidak lengkap. Silakan coba lagi.');
+      }
+
+      stopProgress();
+      renderResult(cfg, parsed);
+    } catch (err){
+      stopProgress();
+      errorBox.innerHTML = '<div class="error-box">⚠️ ' + esc(err.message || 'Terjadi kesalahan saat menyusun soal.') + ' Silakan coba lagi.</div>';
+      renderEmpty();
+    } finally {
+      generateBtn.disabled = false;
+      btnLabel.innerHTML = '🧾 Buat Soal';
+    }
+  }
+
+  function renderEmpty(){
+    outputPanel.innerHTML = `
+      <div class="empty-state" id="emptyState">
+        <div class="glyph">﴾ اقرأ ﴿</div>
+        <h3>Naskah soal akan tampil di sini</h3>
+        <p>Isi konfigurasi di sebelah kiri lalu klik <b>Buat Soal</b>. Naskah, kunci jawaban &amp; pembahasan, serta kisi-kisi akan disusun otomatis sesuai jenjang dan mapel yang dipilih.</p>
+      </div>`;
+  }
+
+  function choiceLetterList(pilihan){
+    return Object.keys(pilihan || {}).sort();
+  }
+
+  function renderResult(cfg, data){
+    const soal = data.soal;
+    const kisi = data.kisi_kisi || [];
+    const arabic = isArabicish(cfg.mapel);
+
+    // ---- Naskah Soal ----
+    let naskahHTML = `
+      <div class="sheet print-area" id="naskahSheet">
+        <div class="sheet-toolbar">
+          <h4><span class="icon">📄</span> Naskah Soal</h4>
+          <button class="copy-btn" data-copy="naskah">📋 Salin</button>
+        </div>
+        <div class="sheet-inner">
+          <div class="kop">
+            <div class="bismillah">بسم الله الرحمن الرحيم</div>
+            <input class="school-name" value="Nama Madrasah/Sekolah" />
+            <div class="exam-title">Penilaian Sumatif — ${esc(cfg.tipeSoal)}</div>
+          </div>
+          <div class="kop-grid">
+            <div class="row"><b>Mata Pelajaran</b><span>${esc(cfg.mapel)}</span></div>
+            <div class="row"><b>Jenjang / Kelas</b><span>${esc(cfg.jenjang)} / ${esc(cfg.kelas)}</span></div>
+            <div class="row"><b>Materi Pokok</b><span>${esc(cfg.topik)}</span></div>
+            <div class="row"><b>Semester / T.A.</b><span>${esc(cfg.semester)} / ${esc(cfg.tahunAjaran)}</span></div>
+            <div class="row"><b>Jumlah Soal</b><span>${soal.length} butir</span></div>
+            <div class="row"><b>Alokasi Waktu</b><span>${esc(cfg.waktu)}</span></div>
+          </div>
+          <div class="kop-instructions">Petunjuk: Bacalah setiap soal dengan teliti sebelum menjawab. Tuliskan identitas pada lembar jawaban yang tersedia.</div>
+          <div id="questionsList">`;
+
+    soal.forEach((q, i) => {
+      const letters = choiceLetterList(q.pilihan);
+      naskahHTML += `
+          <div class="question">
+            <div class="qhead">
+              <div><div class="qnum">${q.nomor || (i+1)}</div><div class="qlevel">${esc(q.level_kognitif||'')}</div></div>
+              <div class="qbody">
+                ${q.stimulus ? `<div class="stimulus ${arabic ? 'arabic-text' : ''}">${esc(q.stimulus)}</div>` : ''}
+                <div class="qtext">${esc(q.pertanyaan)}</div>
+                ${letters.length ? `<div class="choices">` + letters.map(L => `<div class="choice"><b>${L}.</b> <span>${esc(q.pilihan[L])}</span></div>`).join('') + `</div>` : `<div class="answer-line"></div><div class="answer-line"></div>`}
+              </div>
+            </div>
+          </div>`;
+    });
+
+    naskahHTML += `</div></div></div>`;
+
+    // ---- Kunci Jawaban & Pembahasan ----
+    let kunciHTML = `
+      <div class="sheet" id="kunciSheet">
+        <div class="sheet-toolbar">
+          <h4><span class="icon">🔑</span> Kunci Jawaban &amp; Pembahasan</h4>
+          <button class="copy-btn" data-copy="kunci">📋 Salin</button>
+        </div>
+        <div class="sheet-inner">`;
+    soal.forEach((q, i) => {
+      kunciHTML += `
+          <div class="kj-card">
+            <div class="kj-head">
+              <span class="kj-badge">No. ${q.nomor || (i+1)}</span>
+              <span class="kj-answer">Jawaban: <span>${esc(q.jawaban)}</span></span>
+            </div>
+            <div class="kj-pembahasan"><b>Pembahasan:</b> ${esc(q.pembahasan)}</div>
+          </div>`;
+    });
+    kunciHTML += `</div></div>`;
+
+    // ---- Kisi-kisi ----
+    let kisiHTML = `
+      <div class="sheet" id="kisiSheet">
+        <div class="sheet-toolbar">
+          <h4><span class="icon">🗂️</span> Kisi-Kisi Penulisan Soal</h4>
+          <button class="copy-btn" data-copy="kisi">📋 Salin</button>
+        </div>
+        <div class="sheet-inner">
+          <div class="kisi-table-wrap">
+          <table class="kisi">
+            <thead><tr>
+              <th>No</th><th>Capaian Pembelajaran (CP)</th><th>Tujuan Pembelajaran (TP)</th>
+              <th>Materi Pokok</th><th>Indikator Soal</th><th>Level</th><th>Bentuk Soal</th>
+            </tr></thead>
+            <tbody>`;
+    kisi.forEach(r => {
+      kisiHTML += `<tr>
+        <td class="center">${esc(r.no)}</td>
+        <td>${esc(r.cp)}</td>
+        <td>${esc(r.tp)}</td>
+        <td>${esc(r.materi_pokok)}</td>
+        <td>${esc(r.indikator_soal)}</td>
+        <td class="center">${esc(r.level_kognitif)}</td>
+        <td>${esc(r.bentuk_soal)}</td>
+      </tr>`;
+    });
+    kisiHTML += `</tbody></table></div></div></div>`;
+
+    const actionsHTML = `
+      <div class="actions-row no-print">
+        <button class="btn-secondary" id="printBtn">🖨️ Cetak / Simpan sebagai PDF</button>
+        <button class="btn-secondary" id="newBtn">↺ Buat Soal Baru</button>
+      </div>`;
+
+    outputPanel.innerHTML = naskahHTML + kunciHTML + kisiHTML + actionsHTML;
+
+    // wire up copy buttons
+    outputPanel.querySelectorAll('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const kind = btn.getAttribute('data-copy');
+        let text = '';
+        if (kind === 'naskah'){
+          text = `${cfg.mapel} — ${cfg.jenjang} Kelas ${cfg.kelas}\nMateri: ${cfg.topik}\nWaktu: ${cfg.waktu}\n\n`;
+          soal.forEach((q,i) => {
+            text += `${q.nomor||(i+1)}. ${q.stimulus ? '['+q.stimulus+']\n' : ''}${q.pertanyaan}\n`;
+            const letters = choiceLetterList(q.pilihan);
+            letters.forEach(L => text += `   ${L}. ${q.pilihan[L]}\n`);
+            text += '\n';
+          });
+        } else if (kind === 'kunci'){
+          soal.forEach((q,i) => {
+            text += `No. ${q.nomor||(i+1)} Jawaban: ${q.jawaban}\nPembahasan: ${q.pembahasan}\n\n`;
+          });
+        } else if (kind === 'kisi'){
+          text = 'No\tCP\tTP\tMateri Pokok\tIndikator Soal\tLevel\tBentuk Soal\n';
+          kisi.forEach(r => {
+            text += `${r.no}\t${r.cp}\t${r.tp}\t${r.materi_pokok}\t${r.indikator_soal}\t${r.level_kognitif}\t${r.bentuk_soal}\n`;
+          });
+        }
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          const original = btn.innerHTML;
+          btn.innerHTML = '✓ Tersalin';
+          setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = original; }, 1600);
+        });
+      });
+    });
+
+    root.querySelector('#printBtn').addEventListener('click', () => window.print());
+    root.querySelector('#newBtn').addEventListener('click', () => { renderEmpty(); errorBox.innerHTML=''; });
+  }
+
+  generateBtn.addEventListener('click', generate);
+})();
+</script>
