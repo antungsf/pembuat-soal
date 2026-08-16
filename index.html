@@ -149,6 +149,17 @@
 #sanad-root :focus-visible{ outline: 2px solid var(--gold-300); outline-offset: 2px; }
 
 #sanad-root .hint{ font-size:11.5px; color:#7E9186; margin-top:6px; }
+#sanad-root .tarkib-chip{
+  margin-top:10px; font-size:12px; line-height:1.6; color:#E4C766;
+  background: rgba(201,162,39,0.1); border:1px solid rgba(228,199,102,0.28);
+  border-radius:8px; padding:8px 11px; font-family: var(--font-arabic);
+  direction: rtl; text-align: right;
+}
+#sanad-root .tarkib-chip .label{
+  font-family: var(--font-body); direction: ltr; display:block; text-align:left;
+  font-size:10.5px; text-transform:uppercase; letter-spacing:0.05em; font-weight:700;
+  color:#9FB3A6; margin-bottom:4px;
+}
 
 #sanad-root .stepper{
   display:flex; align-items:stretch; border:1px solid rgba(228,199,102,0.28);
@@ -408,6 +419,17 @@
         <select id="topikSelect" style="display:none; margin-bottom:8px;"></select>
         <input type="text" id="topik" placeholder="Contoh: Rukun Islam dan Rukun Iman" />
         <div class="hint" id="topikHint">Boleh spesifik (satu sub-bab) atau umum (satu bab besar).</div>
+        <div class="tarkib-chip" id="tarkibChip" style="display:none;"></div>
+      </div>
+
+      <div class="field" id="fokusArabField" style="display:none;">
+        <label for="fokusArab">🕌 Fokus Soal Bahasa Arab</label>
+        <select id="fokusArab">
+          <option value="campuran">Campuran (Mufradat + Tarkib + Pemahaman Teks)</option>
+          <option value="mufradat">Mufradat (Kosakata)</option>
+          <option value="tarkib">Tarkib (Tata Bahasa/Qawa'id)</option>
+          <option value="qiraah">Qira'ah (Pemahaman Bacaan)</option>
+        </select>
       </div>
 
       <div class="field-row">
@@ -535,7 +557,39 @@
     '11': "Buku Siswa Bahasa Arab MA Kelas XI, Kemenag RI (penulis: Muslihah Faiqotul Himmah)",
     '12': "Buku Siswa Bahasa Arab MA Kelas XII, Kemenag RI (penulis: Muchlisin Soleh)"
   };
+
+  // Fokus tarkib/qawa'id resmi per unit, sesuai isi Buku Siswa Bahasa Arab
+  // MA Kemenag RI — dipakai untuk mengarahkan gramatika soal agar sesuai
+  // urutan pembelajaran asli, bukan gramatika acak.
+  const ARABIC_MA_TARKIB = {
+    '10': {
+      "Unit 1 — التعارف (Ta'aruf / Perkenalan)": "الضمائر (dhamir/kata ganti) wa adawat al-istifham (kata tanya)",
+      "Unit 2 — الأسرة (Al-Usrah / Keluarga)": "al-mudzakkar wal muannats (kata benda maskulin-feminin) wa huruf al-jar (kata depan)",
+      "Unit 3 — المدرسة (Al-Madrasah / Sekolah)": "al-mufrad, al-mutsanna, wal jama' (tunggal, dual, jamak) wa huruf al-'athf wazh-zharf (kata sambung & keterangan tempat/waktu)",
+      "Unit 4 — الهواية (Al-Hiwayah / Hobi)": "aqsam al-fi'l wa aqsam al-kalimah (pembagian jenis kata: isim, fi'il, harf)",
+      "Unit 5 — المهنة (Al-Mihnah / Profesi)": "al-jumlah al-ismiyyah wal jumlah al-fi'liyyah (kalimat nominal & verbal)",
+      "Unit 6 — الحياة اليومية (Al-Hayah Al-Yaumiyyah / Kehidupan Sehari-hari)": "al-a'dad wal ma'dud (bilangan & yang dihitung)"
+    },
+    '11': {
+      "Tema 1 — السياحة (As-Siyahah / Wisata)": "at-tasrif al-lughawi lil fi'il al-madhi (tasrif/konjugasi fi'il madhi)",
+      "Tema 2 — الصحة (Ash-Shihhah / Kesehatan)": "at-tasrif al-lughawi lil fi'il al-mudhari' (tasrif/konjugasi fi'il mudhari')",
+      "Tema 3 — الحج والعمرة (Al-Hajj wal 'Umrah / Haji dan Umrah)": "at-tasrif al-lughawi lil fi'il al-amr (tasrif fi'il amr) wa ahkam an-nida' (kaidah kalimat panggilan/nida)",
+      "Tema 4 — الأديان في إندونيسيا (Agama-agama di Indonesia)": "an-na'at wal idhafah (kata sifat/na'at dan frasa idhafah)"
+    },
+    '12': {
+      "Unit 1 — تكنولوجيا الإعلام والاتصال (Teknologi Informasi & Komunikasi)": "ism at-tafdhil (bentuk superlatif/komparatif)",
+      "Unit 2 — عظماء الإسلام (Tokoh-tokoh Islam)": "al-fi'l al-mabni lil ma'lum wal majhul (kalimat aktif & pasif)",
+      "Unit 3 — الدراسة في الجامعة (Studi di Perguruan Tinggi)": "al-fi'l al-mudhari' al-marfu', al-manshub, wal majzum (fi'il mudhari' rafa', nashab, jazm)"
+    }
+  };
+
   const TOPIK_LAINNYA = "__lainnya__";
+  const FOKUS_ARAB_NOTE = {
+    campuran: "Padukan soal mufradat (kosakata), tarkib (tata bahasa), dan pemahaman teks secara seimbang.",
+    mufradat: "Fokuskan mayoritas soal pada penguasaan mufradat (kosakata) unit terkait — makna, penggunaan dalam kalimat, dan padanan kata.",
+    tarkib: "Fokuskan mayoritas soal pada kaidah tarkib/qawa'id (tata bahasa) unit terkait, sesuai fokus gramatika resminya.",
+    qiraah: "Fokuskan mayoritas soal pada pemahaman teks/qira'ah — sertakan teks bacaan pendek berharakat sebagai stimulus, lalu uji pemahaman isi."
+  };
 
   const KOGNITIF_NOTE = {
     dasar: "*Komposisi: 60% Pengetahuan (C1), 30% Pemahaman (C2), 10% Aplikasi (C3).",
@@ -550,6 +604,9 @@
   const topikEl = root.querySelector('#topik');
   const topikSelectEl = root.querySelector('#topikSelect');
   const topikHintEl = root.querySelector('#topikHint');
+  const tarkibChipEl = root.querySelector('#tarkibChip');
+  const fokusArabFieldEl = root.querySelector('#fokusArabField');
+  const fokusArabEl = root.querySelector('#fokusArab');
   const tipeSoalEl = root.querySelector('#tipeSoal');
   const jumlahEl = root.querySelector('#jumlah');
   const kognitifEl = root.querySelector('#kognitif');
@@ -594,15 +651,33 @@
       topikEl.style.display = '';
       topikEl.value = '';
       topikEl.focus();
+      tarkibChipEl.style.display = 'none';
     } else {
       topikEl.style.display = 'none';
       topikEl.value = topikSelectEl.value;
+      updateTarkibChip();
     }
   });
 
-  function updateTopikMode(){
-    const isArabicMA = jenjangEl.value === 'MA' && mapelEl.value === 'Bahasa Arab';
+  function updateTarkibChip(){
     const kelas = kelasEl.value;
+    const unit = topikSelectEl.value;
+    const tarkib = (ARABIC_MA_TARKIB[kelas] || {})[unit];
+    if (tarkib){
+      tarkibChipEl.innerHTML = '<span class="label">Fokus tarkib/qawa\'id resmi unit ini</span>' + esc(tarkib);
+      tarkibChipEl.style.display = '';
+    } else {
+      tarkibChipEl.style.display = 'none';
+    }
+  }
+
+  function updateTopikMode(){
+    const isArabic = mapelEl.value === 'Bahasa Arab';
+    const isArabicMA = jenjangEl.value === 'MA' && isArabic;
+    const kelas = kelasEl.value;
+
+    fokusArabFieldEl.style.display = isArabic ? '' : 'none';
+
     if (isArabicMA && ARABIC_MA_UNITS[kelas]){
       const units = ARABIC_MA_UNITS[kelas];
       topikSelectEl.style.display = '';
@@ -612,11 +687,15 @@
       topikEl.style.display = 'none';
       topikEl.value = '';
       topikHintEl.textContent = 'Sanad/sumber: ' + (ARABIC_MA_SOURCE[kelas] || 'Buku Teks Utama Bahasa Arab Kemenag RI') + ', sesuai KMA No. 1503/2025.';
+      tarkibChipEl.style.display = 'none';
     } else {
       topikSelectEl.style.display = 'none';
       topikSelectEl.innerHTML = '';
       topikEl.style.display = '';
-      topikHintEl.textContent = 'Boleh spesifik (satu sub-bab) atau umum (satu bab besar).';
+      tarkibChipEl.style.display = 'none';
+      topikHintEl.textContent = isArabic
+        ? 'Boleh spesifik (satu sub-bab) atau umum (satu bab besar). Sertakan konteks unit bila relevan.'
+        : 'Boleh spesifik (satu sub-bab) atau umum (satu bab besar).';
     }
   }
 
@@ -701,10 +780,16 @@
     };
 
     const arabicNote = isArabicish(cfg.mapel)
-      ? "Mata pelajaran ini berkaitan dengan Bahasa Arab/Al-Qur'an. Sertakan teks Arab BERHARAKAT LENGKAP (dengan tasykil) pada bagian yang relevan (ayat, kosakata, kalimat Arab), dan sertakan terjemahan/konteks dalam Bahasa Indonesia bila membantu pemahaman siswa. Pastikan penulisan Arab akurat secara kaidah."
+      ? `Mata pelajaran ini berkaitan dengan Bahasa Arab/Al-Qur'an. Wajib ikuti kaidah berikut:
+- Setiap teks Arab (mufradat, kalimat, teks bacaan, ayat) HARUS ditulis BERHARAKAT LENGKAP (tasykil penuh: fathah, kasrah, dhammah, sukun, tanwin, syaddah bila perlu) tanpa kecuali.
+- Jangan mencampur transliterasi Latin ke dalam teks Arab; jika perlu bantuan makna, tulis terjemahan Bahasa Indonesia terpisah setelah teks Arab.
+- Pastikan kaidah nahwu-sharaf (tata bahasa Arab) pada setiap kalimat benar dan konsisten dengan fokus tarkib yang diminta (bila ada).
+- Susun soal dengan struktur khas pembelajaran Bahasa Arab: sebagian menguji mufradat (kosakata), sebagian tarkib (tata bahasa), dan bila fokusnya qira'ah sertakan teks bacaan pendek berharakat sebagai stimulus.${cfg.tarkib ? `
+- FOKUS TARKIB/QAWA'ID WAJIB untuk unit ini: ${cfg.tarkib}. Sebagian besar soal tarkib harus menguji kaidah ini secara spesifik, bukan tarkib lain di luar unit.` : ''}${cfg.fokusArabLabel ? `
+- Arahan fokus soal dari pengguna: ${cfg.fokusArabLabel}` : ''}`
       : "";
 
-    return `Anda adalah tim penyusun asesmen berpengalaman untuk satuan pendidikan Madrasah (MI/MTs/MA) di Indonesia yang mengikuti Kurikulum Merdeka. Susunkan soal ujian yang valid secara kaidah asesmen (CP, TP, indikator soal, dan level kognitif Taksonomi Bloom C1–C6 yang jelas).
+    return `Anda adalah tim penyusun asesmen berpengalaman untuk satuan pendidikan Madrasah (MI/MTs/MA) di Indonesia yang mengikuti Kurikulum Merdeka sesuai KMA Nomor 1503 Tahun 2025 (Pembelajaran Mendalam & Kurikulum Berbasis Cinta). Susunkan soal ujian yang valid secara kaidah asesmen (CP, TP, indikator soal, dan level kognitif Taksonomi Bloom C1–C6 yang jelas).
 
 RINCIAN PERMINTAAN:
 - Jenjang: ${cfg.jenjang}
@@ -741,6 +826,7 @@ ${JSON.stringify(schema, null, 2)}`;
   }
 
   async function generate(){
+    const isArabicSel = mapelEl.value === 'Bahasa Arab';
     const cfg = {
       jenjang: jenjangEl.value,
       kelas: kelasEl.value,
@@ -751,7 +837,9 @@ ${JSON.stringify(schema, null, 2)}`;
       kognitifLabel: kognitifEl.options[kognitifEl.selectedIndex].text,
       semester: semesterEl.value,
       tahunAjaran: tahunAjaranEl.value.trim() || '2025/2026',
-      waktu: waktuEl.value.trim()
+      waktu: waktuEl.value.trim(),
+      tarkib: isArabicSel ? ((ARABIC_MA_TARKIB[kelasEl.value] || {})[topikSelectEl.value] || '') : '',
+      fokusArabLabel: isArabicSel ? FOKUS_ARAB_NOTE[fokusArabEl.value] : ''
     };
 
     if (!cfg.jenjang || !cfg.kelas || !cfg.mapel || !cfg.topik){
