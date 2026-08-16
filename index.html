@@ -1,3 +1,9 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Sanad — Penyusun Soal Madrasah</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Amiri:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
@@ -354,6 +360,8 @@
   #sanad-root .sheet-toolbar{ display:none; }
 }
 </style>
+</head>
+<body>
 
 <div id="sanad-root">
   <div class="bg-star-field"></div>
@@ -737,7 +745,7 @@ ${JSON.stringify(schema, null, 2)}`;
       jenjang: jenjangEl.value,
       kelas: kelasEl.value,
       mapel: mapelEl.value,
-      topik: topikEl.value.trim(),
+      topik: topikEl.style.display !== 'none' ? topikEl.value.trim() : topikEl.value.trim(),
       tipeSoal: tipeSoalEl.value,
       jumlah: parseInt(jumlahEl.value || '10', 10),
       kognitifLabel: kognitifEl.options[kognitifEl.selectedIndex].text,
@@ -757,19 +765,28 @@ ${JSON.stringify(schema, null, 2)}`;
     btnLabel.innerHTML = '<span class="spin"></span> Meracik Soal…';
     renderProgress(cfg.jumlah);
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 90000);
+
     try {
       const prompt = buildPrompt(cfg);
       const response = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        signal: controller.signal,
         body: JSON.stringify({
           model: "claude-sonnet-4-6",
           max_tokens: 1000,
           messages: [{ role: "user", content: prompt }]
         })
       });
+      clearTimeout(timeoutId);
 
-      if (!response.ok) throw new Error('Permintaan ke layanan penyusun soal gagal (status ' + response.status + ').');
+      if (!response.ok){
+        let detail = '';
+        try { const errJson = await response.json(); detail = errJson?.error?.message || ''; } catch(_e){}
+        throw new Error('Permintaan ke layanan penyusun soal gagal (status ' + response.status + ')' + (detail ? ': ' + detail : '.'));
+      }
       const data = await response.json();
       const textBlock = (data.content || []).find(b => b.type === 'text');
       if (!textBlock) throw new Error('Respons tidak berisi teks yang dapat diproses.');
@@ -782,8 +799,18 @@ ${JSON.stringify(schema, null, 2)}`;
       stopProgress();
       renderResult(cfg, parsed);
     } catch (err){
+      clearTimeout(timeoutId);
       stopProgress();
-      errorBox.innerHTML = '<div class="error-box">⚠️ ' + esc(err.message || 'Terjadi kesalahan saat menyusun soal.') + ' Silakan coba lagi.</div>';
+      console.error('Sanad generate() error:', err);
+      const isAbort = err && err.name === 'AbortError';
+      const msg = isAbort
+        ? 'Permintaan memakan waktu terlalu lama dan dihentikan. Coba lagi, atau kurangi jumlah soal.'
+        : (err && err.message ? err.message : 'Terjadi kesalahan saat menyusun soal.');
+      errorBox.innerHTML =
+        '<div class="error-box">⚠️ ' + esc(msg) + '<br><br>' +
+        '<button type="button" class="btn-secondary" id="retryBtn" style="margin-top:6px;">↻ Coba Lagi</button></div>';
+      const retryBtn = root.querySelector('#retryBtn');
+      if (retryBtn) retryBtn.addEventListener('click', generate);
       renderEmpty();
     } finally {
       generateBtn.disabled = false;
@@ -945,3 +972,5 @@ ${JSON.stringify(schema, null, 2)}`;
   generateBtn.addEventListener('click', generate);
 })();
 </script>
+</body>
+</html>
