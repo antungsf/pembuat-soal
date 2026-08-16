@@ -84,6 +84,9 @@
   color: var(--emerald-950); background: var(--gold-300);
   padding: 5px 12px; border-radius: 999px;
 }
+#sanad-root .masthead-note{
+  font-size: 11.5px; color:#8FA398; max-width: 620px; margin: 14px auto 0; line-height:1.6;
+}
 
 /* ---------- Layout ---------- */
 #sanad-root .layout{
@@ -360,8 +363,9 @@
     <h1>Sanad <em>— Penyusun Soal Madrasah</em></h1>
     <p>Susun naskah soal, kunci jawaban &amp; pembahasan, serta kisi-kisi penulisan soal untuk MI, MTs, dan MA — mapel umum maupun Pendidikan Agama Islam dan Bahasa Arab.</p>
     <div class="badges">
-      <span>MI</span><span>MTs</span><span>MA</span><span>Kurikulum Merdeka</span>
+      <span>MI</span><span>MTs</span><span>MA</span><span>KMA 1503/2025</span><span>Kurikulum Berbasis Cinta</span>
     </div>
+    <p class="masthead-note">Mengacu pada Keputusan Menteri Agama (KMA) Nomor 1503 Tahun 2025 tentang Pedoman Implementasi Kurikulum pada RA, MI, MTs, MA &amp; MAK — pendekatan Pembelajaran Mendalam dan Kurikulum Berbasis Cinta (Panca Cinta). Khusus Bahasa Arab MA, topik disusun mengikuti Buku Teks Utama (BTU) Bahasa Arab Kemenag RI Kelas X–XII.</p>
   </header>
 
   <div class="layout">
@@ -391,10 +395,11 @@
         <select id="mapel" disabled><option value="">Pilih jenjang dulu</option></select>
       </div>
 
-      <div class="field">
+      <div class="field" id="topikField">
         <label for="topik">Topik / Materi Spesifik</label>
+        <select id="topikSelect" style="display:none; margin-bottom:8px;"></select>
         <input type="text" id="topik" placeholder="Contoh: Rukun Islam dan Rukun Iman" />
-        <div class="hint">Boleh spesifik (satu sub-bab) atau umum (satu bab besar).</div>
+        <div class="hint" id="topikHint">Boleh spesifik (satu sub-bab) atau umum (satu bab besar).</div>
       </div>
 
       <div class="field-row">
@@ -494,6 +499,36 @@
     }
   };
 
+  // Unit/tema resmi Bahasa Arab MA sesuai Buku Teks Utama (BTU) Kemenag RI
+  // terbitan 2025 mengikuti KMA No. 1503/2025 (Pembelajaran Mendalam & KBC).
+  const ARABIC_MA_UNITS = {
+    '10': [
+      "Unit 1 — التعارف (Ta'aruf / Perkenalan)",
+      "Unit 2 — الأسرة (Al-Usrah / Keluarga)",
+      "Unit 3 — المدرسة (Al-Madrasah / Sekolah)",
+      "Unit 4 — الهواية (Al-Hiwayah / Hobi)",
+      "Unit 5 — المهنة (Al-Mihnah / Profesi)",
+      "Unit 6 — الحياة اليومية (Al-Hayah Al-Yaumiyyah / Kehidupan Sehari-hari)"
+    ],
+    '11': [
+      "Tema 1 — السياحة (As-Siyahah / Wisata)",
+      "Tema 2 — الصحة (Ash-Shihhah / Kesehatan)",
+      "Tema 3 — الحج والعمرة (Al-Hajj wal 'Umrah / Haji dan Umrah)",
+      "Tema 4 — الأديان في إندونيسيا (Agama-agama di Indonesia)"
+    ],
+    '12': [
+      "Unit 1 — تكنولوجيا الإعلام والاتصال (Teknologi Informasi & Komunikasi)",
+      "Unit 2 — عظماء الإسلام (Tokoh-tokoh Islam)",
+      "Unit 3 — الدراسة في الجامعة (Studi di Perguruan Tinggi)"
+    ]
+  };
+  const ARABIC_MA_SOURCE = {
+    '10': "Buku Siswa Bahasa Arab MA Kelas X, Kemenag RI (penulis: Moh. Nasrudin)",
+    '11': "Buku Siswa Bahasa Arab MA Kelas XI, Kemenag RI (penulis: Muslihah Faiqotul Himmah)",
+    '12': "Buku Siswa Bahasa Arab MA Kelas XII, Kemenag RI (penulis: Muchlisin Soleh)"
+  };
+  const TOPIK_LAINNYA = "__lainnya__";
+
   const KOGNITIF_NOTE = {
     dasar: "*Komposisi: 60% Pengetahuan (C1), 30% Pemahaman (C2), 10% Aplikasi (C3).",
     standar: "*Komposisi: 30% Pengetahuan, 50% Aplikasi, 20% Penalaran.",
@@ -505,6 +540,8 @@
   const kelasEl = root.querySelector('#kelas');
   const mapelEl = root.querySelector('#mapel');
   const topikEl = root.querySelector('#topik');
+  const topikSelectEl = root.querySelector('#topikSelect');
+  const topikHintEl = root.querySelector('#topikHint');
   const tipeSoalEl = root.querySelector('#tipeSoal');
   const jumlahEl = root.querySelector('#jumlah');
   const kognitifEl = root.querySelector('#kognitif');
@@ -524,6 +561,7 @@
       kelasEl.disabled = true;
       mapelEl.innerHTML = '<option value="">Pilih jenjang dulu</option>';
       mapelEl.disabled = true;
+      updateTopikMode();
       return;
     }
     kelasEl.disabled = false;
@@ -537,7 +575,42 @@
       opts += `<optgroup label="${g}">` + groups[g].map(m => `<option value="${m}">${m}</option>`).join('') + '</optgroup>';
     });
     mapelEl.innerHTML = opts;
+    updateTopikMode();
   });
+
+  kelasEl.addEventListener('change', updateTopikMode);
+  mapelEl.addEventListener('change', updateTopikMode);
+
+  topikSelectEl.addEventListener('change', () => {
+    if (topikSelectEl.value === TOPIK_LAINNYA){
+      topikEl.style.display = '';
+      topikEl.value = '';
+      topikEl.focus();
+    } else {
+      topikEl.style.display = 'none';
+      topikEl.value = topikSelectEl.value;
+    }
+  });
+
+  function updateTopikMode(){
+    const isArabicMA = jenjangEl.value === 'MA' && mapelEl.value === 'Bahasa Arab';
+    const kelas = kelasEl.value;
+    if (isArabicMA && ARABIC_MA_UNITS[kelas]){
+      const units = ARABIC_MA_UNITS[kelas];
+      topikSelectEl.style.display = '';
+      topikSelectEl.innerHTML = '<option value="">Pilih unit/tema resmi…</option>' +
+        units.map(u => `<option value="${u}">${u}</option>`).join('') +
+        `<option value="${TOPIK_LAINNYA}">✎ Lainnya (tulis topik sendiri)</option>`;
+      topikEl.style.display = 'none';
+      topikEl.value = '';
+      topikHintEl.textContent = 'Sanad/sumber: ' + (ARABIC_MA_SOURCE[kelas] || 'Buku Teks Utama Bahasa Arab Kemenag RI') + ', sesuai KMA No. 1503/2025.';
+    } else {
+      topikSelectEl.style.display = 'none';
+      topikSelectEl.innerHTML = '';
+      topikEl.style.display = '';
+      topikHintEl.textContent = 'Boleh spesifik (satu sub-bab) atau umum (satu bab besar).';
+    }
+  }
 
   kognitifEl.addEventListener('change', () => {
     kognitifNoteEl.textContent = KOGNITIF_NOTE[kognitifEl.value];
