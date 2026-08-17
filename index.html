@@ -382,7 +382,7 @@
     <h1>Sanad <em>— Penyusun Soal Madrasah</em></h1>
     <p>Susun naskah soal, kunci jawaban &amp; pembahasan, serta kisi-kisi penulisan soal untuk MI, MTs, dan MA — mapel umum maupun Pendidikan Agama Islam dan Bahasa Arab.</p>
     <div class="badges">
-      <span>MI</span><span>MTs</span><span>MA</span><span>KMA 1503/2025</span><span>Kurikulum Berbasis Cinta</span>
+      <span>MI</span><span>MTs</span><span>MA</span><span>KMA 1503/2025</span><span>Kurikulum Berbasis Cinta</span><span>🌐 Versi Publik</span>
     </div>
     <p class="masthead-note">Mengacu pada Keputusan Menteri Agama (KMA) Nomor 1503 Tahun 2025 tentang Pedoman Implementasi Kurikulum pada RA, MI, MTs, MA &amp; MAK — pendekatan Pembelajaran Mendalam dan Kurikulum Berbasis Cinta (Panca Cinta). Khusus Bahasa Arab MA, topik disusun mengikuti Buku Teks Utama (BTU) Bahasa Arab Kemenag RI Kelas X–XII.</p>
   </header>
@@ -487,6 +487,12 @@
         </div>
       </details>
 
+      <div class="field" id="passcodeField">
+        <label for="passcode">🔒 Kode Akses</label>
+        <input type="password" id="passcode" placeholder="Masukkan kode akses dari pengelola aplikasi" />
+        <div class="hint">Diminta agar pemakaian AI di aplikasi ini terkendali. Tanya pengelola aplikasi bila belum punya kode.</div>
+      </div>
+
       <button class="btn-generate" id="generateBtn">
         <span id="btnLabel">🧾 Buat Soal</span>
       </button>
@@ -507,6 +513,14 @@
 <script>
 (function(){
   const root = document.getElementById('sanad-root');
+
+  // ====== KONFIGURASI VERSI PUBLIK ======
+  // Ganti URL di bawah dengan alamat Cloudflare Worker kamu setelah deploy
+  // (lihat panduan "sanad-panduan-deploy-publik.md"). Selama masih placeholder
+  // ini, aplikasi TIDAK akan bisa membuat soal di luar Claude.
+  const WORKER_ENDPOINT = "https://sanad-proxy.antungsf.workers.dev";
+  const PASSCODE_STORAGE_KEY = 'sanad_passcode';
+  // ====== AKHIR KONFIGURASI ======
 
   const KELAS_MAP = {
     MI: ['1','2','3','4','5','6'],
@@ -558,9 +572,6 @@
     '12': "Buku Siswa Bahasa Arab MA Kelas XII, Kemenag RI (penulis: Muchlisin Soleh)"
   };
 
-  // Fokus tarkib/qawa'id resmi per unit, sesuai isi Buku Siswa Bahasa Arab
-  // MA Kemenag RI — dipakai untuk mengarahkan gramatika soal agar sesuai
-  // urutan pembelajaran asli, bukan gramatika acak.
   const ARABIC_MA_TARKIB = {
     '10': {
       "Unit 1 — التعارف (Ta'aruf / Perkenalan)": "الضمائر (dhamir/kata ganti) wa adawat al-istifham (kata tanya)",
@@ -825,6 +836,14 @@ ${JSON.stringify(schema, null, 2)}`;
     return JSON.parse(t.slice(start, end + 1));
   }
 
+  const passcodeEl = root.querySelector('#passcode');
+  if (passcodeEl){
+    try {
+      const savedPasscode = localStorage.getItem(PASSCODE_STORAGE_KEY);
+      if (savedPasscode) passcodeEl.value = savedPasscode;
+    } catch(_e){}
+  }
+
   async function generate(){
     const isArabicSel = mapelEl.value === 'Bahasa Arab';
     const cfg = {
@@ -846,6 +865,17 @@ ${JSON.stringify(schema, null, 2)}`;
       errorBox.innerHTML = '<div class="error-box">Lengkapi dulu Jenjang, Kelas, Mata Pelajaran, dan Topik/Materi sebelum membuat soal.</div>';
       return;
     }
+    if (WORKER_ENDPOINT.includes('GANTI-DENGAN-URL-WORKER-KAMU')){
+      errorBox.innerHTML = '<div class="error-box">⚠️ Aplikasi belum terhubung ke server perantara (Worker). Ikuti panduan "sanad-panduan-deploy-publik.md" untuk deploy Worker, lalu isi WORKER_ENDPOINT di dalam kode.</div>';
+      return;
+    }
+    const passcode = passcodeEl ? passcodeEl.value.trim() : '';
+    if (passcodeEl && !passcode){
+      errorBox.innerHTML = '<div class="error-box">Masukkan kode akses terlebih dahulu.</div>';
+      return;
+    }
+    try { if (passcodeEl) localStorage.setItem(PASSCODE_STORAGE_KEY, passcode); } catch(_e){}
+
     errorBox.innerHTML = '';
     if (!cfg.waktu) cfg.waktu = computeWaktu(cfg.tipeSoal, cfg.jumlah);
 
@@ -858,22 +888,18 @@ ${JSON.stringify(schema, null, 2)}`;
 
     try {
       const prompt = buildPrompt(cfg);
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
+      const response = await fetch(WORKER_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         signal: controller.signal,
-        body: JSON.stringify({
-          model: "claude-sonnet-4-6",
-          max_tokens: 1000,
-          messages: [{ role: "user", content: prompt }]
-        })
+        body: JSON.stringify({ prompt, passcode })
       });
       clearTimeout(timeoutId);
 
       if (!response.ok){
         let detail = '';
-        try { const errJson = await response.json(); detail = errJson?.error?.message || ''; } catch(_e){}
-        throw new Error('Permintaan ke layanan penyusun soal gagal (status ' + response.status + ')' + (detail ? ': ' + detail : '.'));
+        try { const errJson = await response.json(); detail = errJson?.error || ''; } catch(_e){}
+        throw new Error(detail || ('Permintaan ke server gagal (status ' + response.status + ').'));
       }
       const data = await response.json();
       const textBlock = (data.content || []).find(b => b.type === 'text');
